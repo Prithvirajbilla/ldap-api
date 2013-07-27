@@ -53,10 +53,18 @@ include $_SERVER['DOCUMENT_ROOT']."/ldap-api/ldap-auth.php";
 
     return $result;
 }
-
+if(isset($_SERVER['PATH_INFO']))
+{
+	$id = $_SERVER['PATH_INFO'];
+	$id = substr($id, 1);
+}
 if(isset($_GET["user"]))
 {
 	$id = $_GET["user"];
+}
+
+if(isset($_GET["user"]) || isset($_SERVER['PATH_INFO']))
+{
 	$enti = new ldapAuth($id);
 	$res = $enti->getInfo();
 	$fname = $enti->getFirstName();
