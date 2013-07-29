@@ -36,6 +36,7 @@ With Bind
 }</pre>
 Future Changes
 ==============
+<p> For now its completed \m/ </p>
 <h3> include search user with approximate string and get all students with particular matching, etc.
 </h3>
 
