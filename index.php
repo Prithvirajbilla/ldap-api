@@ -62,7 +62,6 @@ if(isset($_GET["user"]))
 {
 	$id = $_GET["user"];
 }
-
 if(isset($_GET["user"]) || isset($_SERVER['PATH_INFO']))
 {
 	$enti = new ldapAuth($id);
@@ -72,7 +71,25 @@ if(isset($_GET["user"]) || isset($_SERVER['PATH_INFO']))
 	$rollno = $enti->getRollNo();
 	$mail = $enti->getMail();
 	$dept = $enti->getDept();
-	if($fname != null)
+    if(isset($_GET["pass"]) && $fname != null)
+    {
+        $pass = $_GET["pass"];
+        $pass = base64_decode($pass);
+        $bind = $enti->bind($pass);
+        $named_array = array(
+            "ldapid" => $id,
+            "fname" => $fname,
+            "lname" => $lname,
+            "rollno" => $rollno,
+            "mail" => $mail,
+            "dept" => $dept,
+            "bind" => $bind,
+        );
+        header('Content-type: text/json');
+        echo indent(json_encode($named_array));
+
+    }
+	elseif($fname != null)
 	{
 		$named_array = array(
 			"ldapid" => $id,

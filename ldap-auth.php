@@ -33,16 +33,16 @@ class ldapAuth
 	        $this->pass = $arguments[1]; 
 	        break;            
 	   }
-	   $this->ldap_conn = ldap_connect($this->ldap_host, $this->ldap_port);
+	   $this->ldap_conn = @ldap_connect($this->ldap_host, $this->ldap_port);
        ldap_set_option($this->ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
-       $this->search_result = ldap_search($this->ldap_conn, $this->baseDN, 'uid=' . $this->ldap_id, array('dn', 'givenname', 'sn','employeenumber', 'mail', 'homedirectory'));
-       $this->info = ldap_get_entries($this->ldap_conn, $this->search_result);
+       $this->search_result = @ldap_search($this->ldap_conn, $this->baseDN, 'uid=' . $this->ldap_id, array('dn', 'givenname', 'sn','employeenumber', 'mail', 'homedirectory'));
+       $this->info = @ldap_get_entries($this->ldap_conn, $this->search_result);
     }
     public function getFirstName()
     {
     	if (!empty($this->search_result))
     	{
-    		$info = ldap_get_entries($this->ldap_conn, $this->search_result);
+    		$info = @ldap_get_entries($this->ldap_conn, $this->search_result);
     		if (isset($info[0]['givenname'][0]))
     		{
     			$user_fname = $info[0]['givenname'][0];
@@ -110,18 +110,20 @@ class ldapAuth
     {
     	return $this->info;
     }
-    public function bind()
+    public function bind($pass)
     {
-    	if(!empty($this->search_result))
-    	{
-    		$info = ldap_get_entries($this->ldap_conn, $this->search_result);
-    		$user_dn = $info[0]['dn'];
-    		if(isset($this->pass))
-    		{
-    			$bind_result = @ldap_bind($this->ldap_conn, $this->user_dn, $this->pass);
-    			return true;
-    		}
+        $this->pass = $pass;
+        $info = ldap_get_entries($this->ldap_conn, $this->search_result);
+    	if(isset($info[0]['dn']))
+    	{	
+        	$user_dn = $info[0]['dn'];
+    		$bind_result = @ldap_bind($this->ldap_conn, $user_dn, $this->pass);
+    		return $bind_result;
     	}
+        else
+        {
+            return false;
+        }
     }
 
 }
