@@ -8,7 +8,7 @@ USAGE
 <p>
 index.php?user=&lt;name&gt; <br />
 index.php/&lt;username&gt; <br/>
-index.php?user=&lt;name&gt;&pass=encodedpass
+index.php?POST(user=&lt;name&gt;&pass=encodedpass)
 <br/>
 </p>
 results a json
